@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Study Buddy - AI Study Assistant</title>
+
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+
+    margin: 0;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background:
+        linear-gradient(
+            135deg,
+            #eef2ff,
+            #f8f9ff
+        );
+
+    color: #222;
+}
+
+
+.container {
+
+    max-width: 950px;
+
+    margin: auto;
+
+    padding: 25px;
+}
+
+
+/* HEADER */
+
+.header {
+
+    background:
+        linear-gradient(
+            135deg,
+            #4f46e5,
+            #7c3aed
+        );
+
+    color: white;
+
+    padding: 40px 25px;
+
+    border-radius: 24px;
+
+    text-align: center;
+
+    margin-bottom: 25px;
+
+    box-shadow:
+        0 10px 30px
+        rgba(79,70,229,0.25);
+}
+
+
+.header h1 {
+
+    margin: 0;
+
+    font-size: 40px;
+}
+
+
+.header p {
+
+    margin-top: 10px;
+
+    font-size: 17px;
+}
+
+
+/* CARDS */
+
+.card {
+
+    background: white;
+
+    padding: 25px;
+
+    border-radius: 20px;
+
+    margin-bottom: 20px;
+
+    box-shadow:
+        0 5px 20px
+        rgba(0,0,0,0.08);
+}
+
+
+.card h2 {
+
+    margin-top: 0;
+
+    color: #4f46e5;
+}
+
+
+/* INPUTS */
+
+label {
+
+    display: block;
+
+    margin-top: 16px;
+
+    margin-bottom: 7px;
+
+    font-weight: bold;
+}
+
+
+input,
+textarea {
+
+    width: 100%;
+
+    padding: 13px;
+
+    border: 1px solid #ccc;
+
+    border-radius: 10px;
+
+    font-size: 16px;
+}
+
+
+textarea {
+
+    resize: vertical;
+
+    min-height: 80px;
+}
+
+
+/* BUTTON */
+
+button {
+
+    width: 100%;
+
+    padding: 15px;
+
+    margin-top: 22px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background: #5b5be7;
+
+    color: white;
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+
+button:hover {
+
+    background: #4338ca;
+}
+
+
+/* RESULTS */
+
+#result {
+
+    display: none;
+}
+
+
+.result-box {
+
+    background: #f5f5ff;
+
+    padding: 18px;
+
+    border-radius: 12px;
+
+    margin-top: 12px;
+}
+
+
+.subject {
+
+    display: flex;
+
+    justify-content:
+        space-between;
+
+    align-items: center;
+
+    padding: 14px;
+
+    background: #f8f8ff;
+
+    border-radius: 12px;
+
+    margin: 9px 0;
+}
+
+
+.priority {
+
+    font-size: 20px;
+
+    font-weight: bold;
+
+    margin: 10px 0;
+}
+
+
+.prediction {
+
+    background: #eef2ff;
+
+    padding: 20px;
+
+    border-radius: 15px;
+
+    margin-top: 15px;
+}
+
+
+.explanation {
+
+    background: #f9fafb;
+
+    padding: 18px;
+
+    border-radius: 15px;
+
+    margin-top: 15px;
+}
+
+
+.motivation {
+
+    background: #fff7df;
+
+    padding: 20px;
+
+    border-radius: 15px;
+
+    text-align: center;
+
+    font-style: italic;
+
+    font-size: 17px;
+}
+
+
+.error {
+
+    color: #c62828;
+
+    font-weight: bold;
+
+    margin-top: 15px;
+}
+
+
+.resource {
+
+    display: block;
+
+    text-decoration: none;
+
+    margin-top: 10px;
+
+    padding: 12px;
+
+    background: #f1f3ff;
+
+    border-radius: 10px;
+
+    color: #4338ca;
+
+    font-weight: bold;
+}
+
+
+footer {
+
+    text-align: center;
+
+    color: #777;
+
+    padding: 15px;
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+<!-- HEADER -->
+
+<div class="header">
+
+    <h1>🧠 Study Buddy</h1>
+
+    <p>
+        Your AI-Powered Personalized Study Assistant
+    </p>
+
+    <p>
+        Learn Smarter • Plan Better • Study Confidently
+    </p>
+
+</div>
+
+
+
+<!-- INPUT SECTION -->
+
+<div class="card">
+
+<h2>👤 Student Information</h2>
+
+
+<label>Age</label>
+
+<input
+    type="number"
+    id="age"
+    placeholder="Example: 17"
+>
+
+
+<label>Class</label>
+
+<input
+    type="number"
+    id="studentClass"
+    placeholder="Example: 12"
+>
+
+
+<label>Subjects</label>
+
+<textarea
+    id="subjects"
+    placeholder="Example: Maths, Physics, Chemistry, English"
+></textarea>
+
+
+<label>⚠️ Weak Subjects</label>
+
+<textarea
+    id="weakSubjects"
+    placeholder="Example: Maths, Physics"
+></textarea>
+
+
+<label>⏰ Study Hours Per Day</label>
+
+<input
+    type="number"
+    id="studyHours"
+    step="0.5"
+    placeholder="Example: 3"
+>
+
+
+<label>📅 Days Until Exam</label>
+
+<input
+    type="number"
+    id="daysLeft"
+    placeholder="Example: 13"
+>
+
+
+<button onclick="createPlan()">
+
+    🤖 Predict & Create My Study Plan
+
+</button>
+
+
+<div
+    id="error"
+    class="error">
+</div>
+
+</div>
+
+
+
+<!-- RESULT -->
+
+<div id="result">
+
+
+
+<!-- STUDENT SUMMARY -->
+
+<div class="card">
+
+<h2>📊 Student Analysis</h2>
+
+<div class="result-box">
+
+<p>
+<strong>Age:</strong>
+<span id="showAge"></span>
+</p>
+
+<p>
+<strong>Class:</strong>
+<span id="showClass"></span>
+</p>
+
+<p>
+<strong>Days Remaining:</strong>
+<span id="showDays"></span>
+</p>
+
+<p>
+<strong>Subjects:</strong>
+<span id="showSubjectCount"></span>
+</p>
+
+<p>
+<strong>Weak Subjects:</strong>
+<span id="showWeakCount"></span>
+</p>
+
+</div>
+
+</div>
+
+
+
+<!-- AI PREDICTION -->
+
+<div class="card">
+
+<h2>🤖 AI Prediction</h2>
+
+<div class="prediction">
+
+<p>
+<strong>Predicted Exam Priority:</strong>
+</p>
+
+<div
+    id="prediction"
+    class="priority">
+</div>
+
+<p id="confidence"></p>
+
+</div>
+
+
+<div class="explanation">
+
+<h3>🔍 Why did the AI predict this?</h3>
+
+<p id="predictionReason"></p>
+
+</div>
+
+</div>
+
+
+
+<!-- STUDY PLAN -->
+
+<div class="card">
+
+<h2>📚 Personalized Daily Study Plan</h2>
+
+<div id="schedule"></div>
+
+</div>
+
+
+
+<!-- FOCUS -->
+
+<div class="card">
+
+<h2>🎯 What to Focus On</h2>
+
+<ul>
+
+<li>📌 Important topics</li>
+
+<li>🔄 Revision</li>
+
+<li>📝 Practice questions</li>
+
+<li>📄 Previous-year questions</li>
+
+</ul>
+
+</div>
+
+
+
+<!-- RECOMMENDATION -->
+
+<div class="card">
+
+<h2>💡 AI Recommendation</h2>
+
+<p id="recommendation"></p>
+
+</div>
+
+
+
+<!-- STUDY TIME -->
+
+<div class="card">
+
+<h2>⏰ Study Time Analysis</h2>
+
+<p>
+
+<strong>
+Daily study time:
+</strong>
+
+<span id="dailyTime"></span>
+
+</p>
+
+
+<p>
+
+<strong>
+Possible study time over the remaining days:
+</strong>
+
+<span id="totalTime"></span>
+
+</p>
+
+</div>
+
+
+
+<!-- RESOURCES -->
+
+<div class="card">
+
+<h2>🌐 Useful Study Resources</h2>
+
+<p>
+These resources can be used for additional study and revision.
+</p>
+
+
+<a
+    class="resource"
+    href="https://ncert.nic.in/"
+    target="_blank">
+
+📚 NCERT — Textbooks & Learning Material
+
+</a>
+
+
+<a
+    class="resource"
+    href="https://cbseacademic.nic.in/"
+    target="_blank">
+
+🏫 CBSE Academic — Official Academic Resources
+
+</a>
+
+
+<a
+    class="resource"
+    href="https://www.cbse.gov.in/"
+    target="_blank">
+
+📝 CBSE — Official Website
+
+</a>
+
+</div>
+
+
+
+<!-- MOTIVATION -->
+
+<div class="card">
+
+<h2>💪 A Little Motivation</h2>
+
+<div
+    id="motivation"
+    class="motivation">
+</div>
+
+</div>
+
+
+</div>
+
+
+
+<footer>
+
+🧠 Study Buddy —
+AI-Based Personalized Study Planning
+
+</footer>
+
+
+</div>
+
+
+
+<script>
+
+
+/*
+====================================================
+AI / MACHINE LEARNING SECTION
+====================================================
+
+We use a small supervised-learning dataset.
+
+Each training example contains:
+
+1. Days remaining
+2. Study hours
+3. Number of subjects
+4. Number of weak subjects
+5. Class
+
+The model learns to predict:
+
+0 = LOW
+1 = NORMAL
+2 = HIGH
+3 = VERY HIGH
+
+The model is trained using gradient descent.
+====================================================
+*/
+
+
+/* TRAINING DATA */
+
+const trainingData = [
+
+    [[60, 5, 4, 0, 12], 0],
+
+    [[50, 4, 5, 1, 12], 0],
+
+    [[45, 3, 6, 1, 11], 0],
+
+    [[40, 5, 5, 1, 12], 0],
+
+    [[35, 3, 6, 2, 12], 1],
+
+    [[30, 4, 5, 1, 12], 1],
+
+    [[28, 3, 6, 2, 11], 1],
+
+    [[25, 4, 5, 2, 12], 1],
+
+    [[20, 4, 5, 2, 12], 2],
+
+    [[18, 3, 6, 2, 12], 2],
+
+    [[15, 4, 5, 2, 12], 2],
+
+    [[14, 3, 6, 3, 12], 2],
+
+    [[10, 4, 5, 2, 12], 3],
+
+    [[8, 3, 6, 3, 12], 3],
+
+    [[6, 4, 5, 3, 12], 3],
+
+    [[4, 5, 6, 4, 12], 3],
+
+    [[3, 3, 5, 3, 11], 3],
+
+    [[2, 4, 6, 4, 12], 3
+
+]];
+
+
+/*
+====================================================
+NORMALIZATION
+====================================================
+*/
+
+function normalize(value, min, max) {
+
+    return (value - min) / (max - min);
+
+}
+
+
+/*
+====================================================
+FEATURE PREPARATION
+====================================================
+*/
+
+function prepareFeatures(input) {
+
+    return [
+
+        normalize(input[0], 0, 60),
+
+        normalize(input[1], 1, 10),
+
+        normalize(input[2], 1, 10),
+
+        normalize(input[3], 0, 10),
+
+        normalize(input[4], 9, 12)
+
+    ];
+
+}
+
+
+/*
+====================================================
+SOFTMAX
+====================================================
+*/
+
+function softmax(scores) {
+
+    let maxScore = Math.max(...scores);
+
+    let expScores =
+        scores.map(
+            x => Math.exp(x - maxScore)
+        );
+
+    let total =
+        expScores.reduce(
+            (a,b) => a + b,
+            0
+        );
+
+    return expScores.map(
+        x => x / total
+    );
+
+}
+
+
+/*
+====================================================
+TRAIN MULTI-CLASS MODEL
+====================================================
+*/
+
+function trainModel(data) {
+
+    const classes = 4;
+
+    const features = 5;
+
+    let weights =
+        Array.from(
+            {length: classes},
+            () =>
+                Array(features + 1).fill(0)
+        );
+
+
+    const learningRate = 0.15;
+
+    const epochs = 1500;
+
+
+    for (let epoch = 0; epoch < epochs; epoch++) {
+
+        for (let item of data) {
+
+            let x =
+                prepareFeatures(item[0]);
+
+            x.unshift(1);
+
+            let target = item[1];
+
+
+            let scores = [];
+
+
+            for (let c = 0; c < classes; c++) {
+
+                let score = 0;
+
+                for (let j = 0; j < x.length; j++) {
+
+                    score +=
+                        weights[c][j] * x[j];
+
+                }
+
+                scores.push(score);
+
+            }
+
+
+            let probabilities =
+                softmax(scores);
+
+
+            for (let c = 0; c < classes; c++) {
+
+                let error =
+                    probabilities[c]
+                    -
+                    (c === target ? 1 : 0);
+
+
+                for (let j = 0; j < x.length; j++) {
+
+                    weights[c][j]
+                        -=
+                        learningRate
+                        *
+                        error
+                        *
+                        x[j];
+
+                }
+
+            }
+
+        }
+
+    }
+
+
+    return weights;
+
+}
+
+
+/*
+====================================================
+PREDICT
+====================================================
+*/
+
+function predict(model, input) {
+
+    let x =
+        prepareFeatures(input);
+
+    x.unshift(1);
+
+
+    let scores = [];
+
+
+    for (
+        let c = 0;
+        c < 4;
+        c++
+    ) {
+
+        let score = 0;
+
+
+        for (
+            let j = 0;
+            j < x.length;
+            j++
+        ) {
+
+            score +=
+                model[c][j] * x[j];
+
+        }
+
+
+        scores.push(score);
+
+    }
+
+
+    let probabilities =
+        softmax(scores);
+
+
+    let prediction =
+        probabilities.indexOf(
+            Math.max(...probabilities)
+        );
+
+
+    return {
+
+        prediction:
+            prediction,
+
+        confidence:
+            Math.max(...probabilities)
+
+    };
+
+}
+
+
+/*
+====================================================
+TRAIN MODEL WHEN WEBSITE LOADS
+====================================================
+*/
+
+const AI_MODEL =
+    trainModel(trainingData);
+
+
+/*
+====================================================
+TIME FORMATTER
+====================================================
+*/
+
+function formatTime(hours) {
+
+    let minutes =
+        Math.round(hours * 60);
+
+
+    let h =
+        Math.floor(minutes / 60);
+
+
+    let m =
+        minutes % 60;
+
+
+    if (h > 0 && m > 0) {
+
+        return h +
+            " hour " +
+            m +
+            " minutes";
+
+    }
+
+
+    if (h > 0) {
+
+        return h + " hour";
+
+    }
+
+
+    return m + " minutes";
+
+}
+
+
+/*
+====================================================
+MAIN APPLICATION
+====================================================
+*/
+
+function createPlan() {
+
+
+    let age =
+        parseInt(
+            document.getElementById("age").value
+        );
+
+
+    let studentClass =
+        parseInt(
+            document.getElementById("studentClass").value
+        );
+
+
+    let subjectsText =
+        document.getElementById("subjects").value;
+
+
+    let weakText =
+        document.getElementById("weakSubjects").value;
+
+
+    let studyHours =
+        parseFloat(
+            document.getElementById("studyHours").value
+        );
+
+
+    let daysLeft =
+        parseInt(
+            document.getElementById("daysLeft").value
+        );
+
+
+    let error =
+        document.getElementById("error");
+
+
+    error.innerHTML = "";
+
+
+    /* VALIDATION */
+
+    if (
+
+        !age ||
+
+        !studentClass ||
+
+        !subjectsText.trim() ||
+
+        !weakText.trim() ||
+
+        !studyHours ||
+
+        !daysLeft
+
+    ) {
+
+        error.innerHTML =
+            "⚠️ Please fill in all the boxes.";
+
+        return;
+
+    }
+
+
+    if (studyHours <= 0) {
+
+        error.innerHTML =
+            "⚠️ Study hours must be greater than zero.";
+
+        return;
+
+    }
+
+
+    if (daysLeft <= 0) {
+
+        error.innerHTML =
+            "⚠️ Days remaining must be greater than zero.";
+
+        return;
+
+    }
+
+
+    /* SUBJECT LIST */
+
+    let subjects =
+        subjectsText
+            .split(",")
+            .map(
+                s => s.trim()
+            )
+            .filter(
+                s => s !== ""
+            );
+
+
+    /* WEAK SUBJECT LIST */
+
+    let weakSubjects =
+        weakText
+            .split(",")
+            .map(
+                s => s.trim()
+            )
+            .filter(
+                s => s !== ""
+            );
+
+
+    let subjectLower =
+        subjects.map(
+            s => s.toLowerCase()
+        );
+
+
+    /* CHECK WEAK SUBJECTS */
+
+    for (
+        let weak of weakSubjects
+    ) {
+
+        if (
+            !subjectLower.includes(
+                weak.toLowerCase()
+            )
+        ) {
+
+            error.innerHTML =
+                "⚠️ " +
+                weak +
+                " is not included in your subjects.";
+
+            return;
+
+        }
+
+    }
+
+
+    /*
+    ================================================
+    AI INPUT FEATURES
+    ================================================
+    */
+
+    let features = [
+
+        daysLeft,
+
+        studyHours,
+
+        subjects.length,
+
+        weakSubjects.length,
+
+        studentClass
+
+    ];
+
+
+    /*
+    ================================================
+    AI PREDICTION
+    ================================================
+    */
+
+    let result =
+        predict(
+            AI_MODEL,
+            features
+        );
+
+
+    let labels = [
+
+        "🟢 LOW",
+
+        "🔵 NORMAL",
+
+        "🟠 HIGH",
+
+        "🔴 VERY HIGH"
+
+    ];
+
+
+    let prediction =
+        labels[
+            result.prediction
+        ];
+
+
+    let confidence =
+        Math.round(
+            result.confidence * 100
+        );
+
+
+    /*
+    ================================================
+    STUDY TIME ALLOCATION
+    ================================================
+    */
+
+
+    let weights = {};
+
+
+    for (
+        let subject of subjects
+    ) {
+
+        if (
+            weakSubjects
+                .map(
+                    s => s.toLowerCase()
+                )
+                .includes(
+                    subject.toLowerCase()
+                )
+        ) {
+
+            weights[subject] = 2;
+
+        }
+        else {
+
+            weights[subject] = 1;
+
+        }
+
+    }
+
+
+    let totalWeight =
+        Object.values(weights)
+            .reduce(
+                (a,b) => a + b,
+                0
+            );
+
+
+    let scheduleHTML = "";
+
+
+    for (
+        let subject of subjects
+    ) {
+
+        let time =
+            (
+                weights[subject]
+                /
+                totalWeight
+            )
+            *
+            studyHours;
+
+
+        scheduleHTML +=
+
+            '<div class="subject">' +
+
+            '<strong>📖 ' +
+            subject +
+            '</strong>' +
+
+            '<span>' +
+            formatTime(time) +
+            '</span>' +
+
+            '</div>';
+
+    }
+
+
+    /*
+    ================================================
+    AI EXPLANATION
+    ================================================
+    */
+
+    let reason =
+
+        "The machine-learning model considered " +
+
+        daysLeft +
+
+        " days remaining, " +
+
+        studyHours +
+
+        " study hours per day, " +
+
+        subjects.length +
+
+        " subjects and " +
+
+        weakSubjects.length +
+
+        " weak subject(s) to predict your exam priority.";
+
+
+    /*
+    ================================================
+    RECOMMENDATION
+    ================================================
+    */
+
+    let recommendation =
+
+        "Your weak subjects are " +
+
+        weakSubjects.join(", ") +
+
+        ". The personalized planner gives these subjects extra study priority. " +
+
+        "Because your predicted exam priority is " +
+
+        prediction +
+
+        ", focus on important topics, revision, practice questions and previous-year questions.";
+
+
+    /*
+    ================================================
+    MOTIVATION
+    ================================================
+    */
+
+    let quotes = [
+
+        "Believe you can and you're halfway there.",
+
+        "Small progress is still progress.",
+
+        "The secret of getting ahead is getting started.",
+
+        "Your future self will thank you for studying today.",
+
+        "You don't have to be perfect. You just have to keep going.",
+
+        "Success comes from consistent effort."
+
+    ];
+
+
+    let quote =
+        quotes[
+            Math.floor(
+                Math.random()
+                *
+                quotes.length
+            )
+        ];
+
+
+    /*
+    ================================================
+    TOTAL STUDY TIME
+    ================================================
+    */
+
+    let totalTime =
+        studyHours *
+        daysLeft;
+
+
+    /*
+    ================================================
+    DISPLAY RESULTS
+    ================================================
+    */
+
+    document.getElementById(
+        "showAge"
+    ).innerText = age;
+
+
+    document.getElementById(
+        "showClass"
+    ).innerText = studentClass;
+
+
+    document.getElementById(
+        "showDays"
+    ).innerText = daysLeft;
+
+
+    document.getElementById(
+        "showSubjectCount"
+    ).innerText =
+        subjects.length;
+
+
+    document.getElementById(
+        "showWeakCount"
+    ).innerText =
+        weakSubjects.length;
+
+
+    document.getElementById(
+        "prediction"
+    ).innerText =
+        prediction;
+
+
+    document.getElementById(
+        "confidence"
+    ).innerText =
+
+        "Model confidence: approximately "
+        +
+        confidence
+        +
+        "%";
+
+
+    document.getElementById(
+        "predictionReason"
+    ).innerText =
+        reason;
+
+
+    document.getElementById(
+        "schedule"
+    ).innerHTML =
+        scheduleHTML;
+
+
+    document.getElementById(
+        "recommendation"
+    ).innerText =
+        recommendation;
+
+
+    document.getElementById(
+        "dailyTime"
+    ).innerText =
+        formatTime(studyHours);
+
+
+    document.getElementById(
+        "totalTime"
+    ).innerText =
+        formatTime(totalTime);
+
+
+    document.getElementById(
+        "motivation"
+    ).innerText =
+
+        "✨ " +
+        quote +
+        " Keep going — you've got this!";
+
+
+    document.getElementById(
+        "result"
+    ).style.display =
+        "block";
+
+
+    window.scrollTo({
+
+        top:
+            document.getElementById(
+                "result"
+            ).offsetTop,
+
+        behavior:
+            "smooth"
+
+    });
+
+}
+
+</script>
+
+</body>
+
+</html>
